@@ -1,0 +1,45 @@
+VCF=INPUT(path="/home/picandet/Test_21_August/1VCF_CADDscoreWithout#.vcf")
+
+HW=INPUT(path="/home/picandet/Test_21_August/Hardy_Weinberg2.csv")
+
+MAF=INPUT(path="/home/picandet/Test_21_August/MinorAlleleFrequency.csv")
+
+
+HW_missing=CSVCleaner(original=HW,fillRows=true)
+
+HW_filtered=CSVFilter(csv=HW_missing,regexp="TEST=ALL")
+
+VCF_without_header=CSVCleaner(original=VCF, rowSkip=149, replace="POS\n^\n1:")
+
+VCF_HW=CSVJoin(csv1=VCF_without_header, csv2=HW_filtered, csv3=MAF, useKeys=true, keyColumnNames="POS,SNP,SNP")
+
+
+SNP_Filtered_HW_MAF=CSVFilter(csv=VCF_HW, lowBound="MAF=0.07,P=0.005")
+
+VCF_filtered_withoutHeader=CSVTransformer(csv1=SNP_Filtered_HW_MAF, transform1="csv1[,2]", transform2="csv1[,1]", transform3="csv1[,3:59]")
+
+VCF_filtered_withoutHeader_cleaned=CSVCleaner(original=VCF_filtered_withoutHeader, replace="transform2_1\n1:\n", rename="transform1_1=CHROM,transform2_1=POS")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

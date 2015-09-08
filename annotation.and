@@ -1,0 +1,23 @@
+listGenes=INPUT(path="/home/picandet/Test_11_AUGUST/9-associationGeneSNP.txt")
+
+unique=CSV2IDList(listGenes)
+
+annotatedFile=BiomartAnnotator(filter=unique,attributes="chromosome_name,start_position,end_position,strand",batchSize=10000, filterTypes="ensembl_gene_id")
+
+annotated=INPUT(path="/home/picandet/exec/annotated_file/annotations.csv")
+
+onlyChrom1=CSVFilter(csv=annotated,regexp="chromosome_name=1")
+
+plusMinus20=CSVTransformer(csv1=onlyChrom1, transform1="csv1[,1:2]",transform2="csv1[,3]-20",transform3="csv1[,4]+20",transform4="csv1[,5]" )
+
+plusMinus20Renamed=CSVFilter(csv=plusMinus20,rename="transform2_1=start_position-20,transform3_1=end_position+20,transform4_1=strand")
+
+filteredChrom1=CSVFilter(csv=listGenes,auxiliary=plusMinus20Renamed,matchColumn="gene",idColumn="gene")
+
+mapping=CSVJoin(csv1=filteredChrom1,csv2=plusMinus20Renamed,useKeys=true,keyColumnNames="gene,gene")
+
+mapping2=CSVCleaner(original=mapping,replace="SNP\n^1:\n")
+
+tab=INPUT(path="/home/picandet/Test_11_AUGUST/10_mappingFiltering.csv")
+
+tab2=CSVCleaner(original=tab,replace="SNP\n^\n1:")

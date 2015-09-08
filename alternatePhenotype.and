@@ -1,0 +1,23 @@
+// conversion of ped file
+ped = INPUT(path="/home/picandet/Test_21_August/plink_file21August.ped")
+
+ped_filtered = CSVCleaner(original=ped, rowSkip=4)
+
+ped_filtered2=CSVTransformer(csv1=ped_filtered, transform1="apply(csv1,1, function(x) substr(x[1],1,12) )")
+
+ped_filtered3=CSVCleaner(original=ped_filtered2, replace="transform1_1\n-\n." )
+
+
+
+expression_data = INPUT(path="/home/picandet/Summer_Project/DATA/GeneExpr_v64.csv") 
+
+alternate_file = MatrixTranspose(matrix=expression_data, rowName="IID")
+
+alternate_file2 = CSVTransformer(csv1=alternate_file, transform1= "csv1[,1]", transform2= "csv1", columnNames="c('FID', colnames(csv1))")
+
+alternate_filtered = CSVFilter(csv=alternate_file2, auxiliary=ped_filtered3)
+
+
+
+
+

@@ -2,7 +2,8 @@
 
 
 The script Total_eQTLAnalysis.sh is sufficient to run the entire eQTL analysis.
-required inputs : VCF file, Gene expression data
+required inputs : VCF file, Gene expression data.
+https://drive.google.com/folderview?id=0B_D-zNel2DMNfmdqOXlsZlFKUTczeUQ5SnFQVm56cmhjZWlyaFhTdkFnb21iSlZlcUJ4TEk&usp=sharing
 required software : Anduril, R, VCFTools
 In this script, other scripts are called. 
 The main script is commented but not the additionnal scripts, so I describe here what they are doing.
